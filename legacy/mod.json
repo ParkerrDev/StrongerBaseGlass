@@ -1,0 +1,13 @@
+{
+    "Id": "StrongerBaseGlass",
+    "DisplayName": "Stronger Base Glass",
+    "Author": "hydronautica",
+    "Version": "1.0",
+    "Enable": true,
+    "Game": "Subnautica",
+    "AssemblyName": "StrongerBaseGlass.dll",
+    "Dependencies": [],
+    "LoadBefore": [],
+    "LoadAfter": [],
+    "VersionChecker": null
+}
