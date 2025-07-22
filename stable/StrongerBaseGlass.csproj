@@ -8,7 +8,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
-  
+
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
@@ -18,7 +18,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  
+
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
@@ -30,10 +30,8 @@
 
   <ItemGroup>
     <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
-    <PackageReference Include="BepInEx.Core" Version="5.*" />
-    <PackageReference Include="HarmonyX" Version="2.*" />
-    <PackageReference Include="Subnautica.Nautilus" Version="1.0.0-pre.38" />
-    <PackageReference Include="UnityEngine.Modules" Version="2019.4.36" />
+    <PackageReference Include="BepInEx.Core" Version="5.*" PrivateAssets="all" />
+    <PackageReference Include="UnityEngine.Modules" Version="2019.4.36" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>
@@ -42,8 +40,9 @@
       <HintPath>$(SubnauticaDir)\Subnautica_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>$(SubnauticaDir)\Subnautica_Data\Managed\Newtonsoft.Json.dll</HintPath>
+    <!-- Reference the Harmony library that comes with BepInEx -->
+    <Reference Include="0Harmony">
+      <HintPath>$(SubnauticaDir)\BepInEx\core\0Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
@@ -54,14 +53,30 @@
       <HintPath>$(MSBuildProjectDirectory)\libs\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>$(MSBuildProjectDirectory)\libs\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="0Harmony">
+      <HintPath>$(MSBuildProjectDirectory)\libs\0Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
-    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2"
+      PrivateAssets="all" />
   </ItemGroup>
+
+  <Target Name="CleanDestinationFolder" BeforeTargets="Build">
+    <!-- Remove the entire destination folder before building -->
+    <RemoveDir
+      Directories="C:\Program Files (x86)\Steam\steamapps\common\Subnautica\BepInEx\plugins\StrongerBaseGlass" />
+  </Target>
+
+  <Target Name="CopyDLLToDestination" AfterTargets="Build">
+    <!-- Copy only the main DLL -->
+    <Copy SourceFiles="$(OutputPath)\StrongerBaseGlass.dll"
+      DestinationFolder="C:\Program Files (x86)\Steam\steamapps\common\Subnautica\BepInEx\plugins\StrongerBaseGlass" />
+    <!-- Then run your executable -->
+    <Exec
+      Command="start &quot;&quot; &quot;C:\Program Files (x86)\Steam\steamapps\common\Subnautica\Subnautica.exe&quot; -vrmode none" />
+  </Target>
 
 </Project>
